@@ -11,7 +11,8 @@ module OmniAuth
         :site          => 'https://api.twitch.tv',
         :api_url       => 'https://api.twitch.tv/kraken',
         :authorize_url => '/kraken/oauth2/authorize',
-        :proxy         => ENV['http_proxy'] ? URI(ENV['http_proxy']) : nil
+        :proxy         => ENV['http_proxy'] ? URI(ENV['http_proxy']) : nil,
+        :callback      => nil
       }
 
       option :response_type, 'token'
@@ -34,6 +35,10 @@ module OmniAuth
         { 'raw_info' => @json }
       end
 
+      def callback_url
+        options.client_options.callback || super
+      end
+
       def callback_phase
         @json = {}
         token = request.params["access_token"]
@@ -43,7 +48,6 @@ module OmniAuth
           ap user
           @json.merge!(user)
         rescue ::RestClient::Exception => e
-          ap e
           raise ::Timeout::Error
         end
         super
