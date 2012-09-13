@@ -50,11 +50,22 @@ module OmniAuth
         begin
           response = RestClient.get("#{options.client_options.api_url}/user", { 'Authorization' => "OAuth #{access_token}" })
           user = MultiJson.decode(response.to_s)
-          ap user
+          #  {
+          #              "name" => "xxx",
+          #        "created_at" => "2011-11-17T02:15:55Z",
+          #        "updated_at" => "2012-09-12T08:40:39Z",
+          #              "logo" => nil,
+          #            "_links" => {
+          #          "self" => "https://api.twitch.tv/kraken/users/xxx"
+          #      },
+          #             "staff" => false,
+          #               "_id" => 26190497,
+          #      "display_name" => "xxx",
+          #             "email" => "xxx@gmail.com"
+          #  }
           @json.merge!(user)
           super
         rescue CallbackError, ::RestClient::Exception => e
-          ap e
           fail!(:invalid_credentials, e)
         rescue ::MultiJson::DecodeError => e
           fail!(:invalid_response, e)
