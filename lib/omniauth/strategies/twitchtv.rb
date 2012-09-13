@@ -59,7 +59,7 @@ module OmniAuth
           #          "self" => "https://api.twitch.tv/kraken/users/xxx"
           #      },
           #             "staff" => false,
-          #               "_id" => 26190497,
+          #               "_id" => 23456789,
           #      "display_name" => "xxx",
           #             "email" => "xxx@gmail.com"
           #  }
