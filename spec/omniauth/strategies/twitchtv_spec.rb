@@ -11,21 +11,12 @@ describe "OmniAuth::Strategies::Twitchtv" do
 
   context 'client options' do
     it 'has correct Twitchtv site' do
-      subject.options.client_options.site.should eq('https://api.twitchtv.com')
+      subject.options.client_options.site.should eq('https://api.twitch.tv')
     end
 
     it 'has correct authorize url' do
-      subject.options.client_options.authorize_url.should eq('https://api.twitchtv.com/kraken/oauth2/authorize')
+      subject.options.client_options.authorize_url.should eq('https://api.twitch.tv/kraken/oauth2/authorize')
     end
   end
 
-  context '#uid' do
-    before :each do
-      subject.stub(:raw_info) { { 'id' => '123' } }
-    end
-
-    it 'returns the id from raw_info' do
-      subject.uid.should eq('123')
-    end
-  end
 end
