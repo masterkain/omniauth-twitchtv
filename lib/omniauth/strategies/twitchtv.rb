@@ -28,7 +28,11 @@ module OmniAuth
         get_hash_from_channel = lambda do |token|
           http_client = HTTPClient.new
           header = {"Authorization"=>"OAuth #{token}"}
-          http_client.get(info_url, "", header)
+          response = http_client.get(info_url, "", header)
+          if response.code != "200"
+            raise Omniauth::Twitchtv::TwitchtvError.new("Failed to get user details from twitchtv")
+          end
+          response
         end
         @raw_info ||= JSON.parse(get_hash_from_channel.call(access_token.token).body)
       end
@@ -42,6 +46,8 @@ module OmniAuth
           "https://api.twitch.tv/kraken/user"
         elsif self.options.scope.to_sym == :channel_read then
           "https://api.twitch.tv/kraken/channel"
+        else
+          raise Omniauth::Twitchtv::TwitchtvError.new("Must include at least either the channel or user read scope in omniauth-twitchtv initializer")
         end
         url
       end
