@@ -29,7 +29,7 @@ module OmniAuth
           http_client = HTTPClient.new
           header = {"Authorization"=>"OAuth #{token}"}
           response = http_client.get(info_url, "", header)
-          if response.code != "200"
+          if response.code != "200" && response.code != 200
             raise Omniauth::Twitchtv::TwitchtvError.new("Failed to get user details from twitchtv")
           end
           response
