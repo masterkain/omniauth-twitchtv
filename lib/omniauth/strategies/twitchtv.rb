@@ -38,18 +38,12 @@ module OmniAuth
       end
 
       def info_url
-        url = if self.options.scopes && (self.options.scopes.index("user_read") || self.options.scopes.index(:user_read)) then
-          "https://api.twitch.tv/kraken/user"
-        elsif self.options.scopes && (self.options.scopes.index("channel_read") || self.options.scopes.index(:channel_read)) then
-          "https://api.twitch.tv/kraken/channel"
-        elsif self.options.scope.to_sym == :user_read then
-          "https://api.twitch.tv/kraken/user"
-        elsif self.options.scope.to_sym == :channel_read then
-          "https://api.twitch.tv/kraken/channel"
-        else
+        unless self.options.scopes && (self.options.scopes.index("user_read") || self.options.scopes.index(:user_read)) ||
+            self.options.scopes && (self.options.scopes.index("user_read") || self.options.scopes.index(:user_read)) ||
+            self.options.scope.to_sym == :user_read || self.options.scope.to_sym == :channel_read
           raise Omniauth::Twitchtv::TwitchtvError.new("Must include at least either the channel or user read scope in omniauth-twitchtv initializer")
         end
-        url
+        "https://api.twitch.tv/kraken/user"
       end
     end
   end
