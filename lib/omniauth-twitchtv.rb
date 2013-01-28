@@ -3,6 +3,7 @@ require 'omniauth/strategies/twitchtv'
 
 module Omniauth
   module Twitchtv
-    # Your code goes here...
+    class TwitchtvError < OmniAuth::Error
+    end
   end
 end
