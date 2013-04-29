@@ -11,11 +11,11 @@ describe "OmniAuth::Strategies::Twitchtv" do
 
   context 'client options' do
     it 'has correct Twitchtv site' do
-      subject.options.client_options.site.should eq('https://api.twitchtv.com')
+      subject.options.client_options.site.should eq('https://api.twitch.tv')
     end
 
     it 'has correct authorize url' do
-      subject.options.client_options.authorize_url.should eq('https://api.twitchtv.com/kraken/oauth2/authorize')
+      subject.options.client_options.authorize_url.should eq('/kraken/oauth2/authorize')
     end
   end
 
