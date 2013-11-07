@@ -22,7 +22,13 @@ module OmniAuth
 
       info do
         {
-          name: raw_info["name"]
+          name: raw_info['name'],
+          email: raw_info['email'],
+          nickname: raw_info['display_name'],
+          image: raw_info['logo'],
+          urls: {
+            channel: raw_info['_links']['self']
+          }
         }
       end
 
