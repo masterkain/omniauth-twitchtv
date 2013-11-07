@@ -3,6 +3,8 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class Twitchtv < OmniAuth::Strategies::OAuth2
+      option :name, 'twitchtv'
+
       option :client_options, {
         :site => 'https://api.twitch.tv',
         :authorize_url => 'https://api.twitch.tv/kraken/oauth2/authorize',
@@ -15,7 +17,7 @@ module OmniAuth
       option :response_type, 'code'
 
       uid do
-        access_token.token
+        raw_info['_id']
       end
 
       info do
@@ -24,17 +26,15 @@ module OmniAuth
         }
       end
 
+      extra do
+        {
+          'raw_info' => raw_info
+        }
+      end
+
       def raw_info
-        get_hash_from_channel = lambda do |token|
-          http_client = HTTPClient.new
-          header = {"Authorization"=>"OAuth #{token}"}
-          response = http_client.get(info_url, "", header)
-          if response.code != "200" && response.code != 200
-            raise Omniauth::Twitchtv::TwitchtvError.new("Failed to get user details from twitchtv")
-          end
-          response
-        end
-        @raw_info ||= JSON.parse(get_hash_from_channel.call(access_token.token).body)
+        access_token.options[:header_format] = 'OAuth %s'
+        @raw_info ||= access_token.get(info_url).parsed
       end
 
       def info_url
@@ -49,4 +49,3 @@ module OmniAuth
   end
 end
 OmniAuth.config.add_camelization 'twitchtv', 'Twitchtv'
-
