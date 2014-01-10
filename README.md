@@ -37,8 +37,8 @@ Here's an example *Auth Hash* available in `request.env['omniauth.auth']`:
     :name => 'jmbloggs',
     :image => 'http://static-cdn.jtvnw.net/jtv_user_pictures/jmbloggs-profile_image-e22f9c709cb15002-300x300.jpeg',
     :urls => { 
-      :twitchtv => 'https://www.twitch.tv/jmb0000/profile, 
-      :website => "https://api.twitch.tv/kraken/users/jmb0000"' 
+      :twitchtv => 'https://www.twitch.tv/jmb0000/profile', 
+      :website => 'https://api.twitch.tv/kraken/users/jmb0000' 
     },
     :partnered => false
   },
