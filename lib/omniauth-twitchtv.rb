@@ -1,4 +1,4 @@
-require "omniauth-twitchtv/version"
+require 'omniauth-twitchtv/version'
 require 'omniauth/strategies/twitchtv'
 
 module Omniauth
