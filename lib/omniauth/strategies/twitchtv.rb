@@ -71,13 +71,13 @@ module OmniAuth
         unless self.options.scope && (self.options.scope.index('user_read') || self.options.scope.index(:user_read)) ||
             self.options.scope && (self.options.scope.index('user_read') || self.options.scope.index(:user_read)) ||
             self.options.scope.to_sym == :user_read || self.options.scope.to_sym == :channel_read
-          raise(Omniauth::Twitchtv::TwitchtvError.new("You must include at least either the channel or user read scope in omniauth-twitchtv initializer"))
+          raise(Omniauth::Twitchtv::TwitchtvError.new('You must include at least either the channel or user read scope in omniauth-twitchtv initializer.'))
         end
         'https://api.twitch.tv/kraken/user'
       end
 
       def profile_url
-        username = raw_info["name"]
+        username = raw_info['name']
         "https://www.twitch.tv/#{username}/profile"
       end
 
