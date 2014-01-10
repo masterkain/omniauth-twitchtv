@@ -1,20 +1,29 @@
-# OmniAuth Twitchtv
+## OmniAuth Twitchtv
 
 This gem contains a Twitchtv OAuth2 Strategy for OmniAuth.
 
-# Usage
+## Installation
+
+Add to your `Gemfile`:
+
+```ruby
+gem 'omniauth-twitchtv'
+```
+
+Then `bundle install`.
+
+
+## Usage
 Add the config line below to application's Devise intitializer.
 
 config.omniauth :twitchtv, Settings.twitchtv.client_id, Settings.twitchtv.client_secret, scope: Settings.twitchtv.permissions.join(" ")
 
-
-# Notes
 Sample config:
 
 config.omniauth :twitchtv, 4n6jy6klu89s300ap05t, a3d3dm9ag6s5an33p01, scope: 'user_read channel_editor channel_commercial channel_read'
 
 
-# Auth Hash
+## Auth Hash
 
 Here's an example *Auth Hash* available in `request.env['omniauth.auth']`:
 
