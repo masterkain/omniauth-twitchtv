@@ -7,7 +7,7 @@ This gem contains a Twitchtv OAuth2 Strategy for OmniAuth.
 Add to your `Gemfile`:
 
 ```ruby
-gem 'omniauth-twitchtv'
+gem 'omniauth-twitchtv', github: 'masterkain/omniauth-twitchtv'
 ```
 
 Then `bundle install`.
