@@ -6,11 +6,9 @@ module OmniAuth
     class Twitchtv < OmniAuth::Strategies::OAuth2
       class NoAuthorizationCodeError < StandardError; end
 
-      option :client_options, {
-        :site          => 'https://api.twitch.tv',
-        :authorize_url => 'https://api.twitch.tv/kraken/oauth2/authorize',
-        :token_url     => 'https://api.twitch.tv/kraken/oauth2/token'
-      }
+      option :client_options, site: 'https://api.twitch.tv',
+                              authorize_url: 'https://api.twitch.tv/kraken/oauth2/authorize',
+                              token_url: 'https://api.twitch.tv/kraken/oauth2/token'
 
       option :authorize_params, {}
       option :authorize_options, [:scope, :response_type]
@@ -19,25 +17,21 @@ module OmniAuth
       uid { raw_info['_id'] }
 
       info do
-        prune!({
-          name: raw_info['name'],
-          nickname: raw_info['display_name'],
-          email: raw_info['email'],
-          image: raw_info['logo'],
-          description: raw_info['bio'],
-          urls: {
-            twitchtv: profile_url,
-            website: raw_info['_links']['self']
-          },
-          partnered: raw_info['partnered']
-        })
+        prune!(name: raw_info['name'],
+               nickname: raw_info['display_name'],
+               email: raw_info['email'],
+               image: raw_info['logo'],
+               description: raw_info['bio'],
+               urls: {
+                 twitchtv: profile_url,
+                 website: raw_info['_links']['self']
+               },
+               partnered: raw_info['partnered'])
       end
 
       credentials do
-        prune!({
-          token: access_token.token,
-          secret: access_token.client.secret
-        })
+        prune!(token: access_token.token,
+               secret: access_token.client.secret)
       end
 
       extra do
@@ -55,24 +49,24 @@ module OmniAuth
       end
 
       def raw_info
-        get_hash_from_channel = lambda do |token|
+        get_hash_from_channel = lambda do |token, client_id|
           http_client = HTTPClient.new
-          header = {'Authorization' => "OAuth #{token}"}
+          header = { 'Authorization' => "OAuth #{token}", 'Client-ID ' => client_id }
           response = http_client.get(info_url, '', header)
           if response.code.to_i != 200
-            raise(Omniauth::Twitchtv::TwitchtvError.new('Failed to get user details from Twitch.TV'))
+            raise Omniauth::Twitchtv::TwitchtvError, 'Failed to get user details from Twitch.TV'
           end
           response
         end
 
-        @raw_info ||= JSON.parse(get_hash_from_channel.call(access_token.token).body)
+        @raw_info ||= JSON.parse(get_hash_from_channel.call(access_token.token, access_token.client.id).body)
       end
 
       def info_url
-        unless self.options.scope && (self.options.scope.index('user_read') || self.options.scope.index(:user_read)) ||
-            self.options.scope && (self.options.scope.index('user_read') || self.options.scope.index(:user_read)) ||
-            self.options.scope.to_sym == :user_read || self.options.scope.to_sym == :channel_read
-          raise(Omniauth::Twitchtv::TwitchtvError.new('You must include at least either the channel or user read scope in omniauth-twitchtv initializer.'))
+        unless options.scope && (options.scope.index('user_read') || options.scope.index(:user_read)) ||
+               options.scope && (options.scope.index('user_read') || options.scope.index(:user_read)) ||
+               options.scope.to_sym == :user_read || options.scope.to_sym == :channel_read
+          raise Omniauth::Twitchtv::TwitchtvError, 'You must include at least either the channel or user read scope in omniauth-twitchtv initializer.'
         end
         'https://api.twitch.tv/kraken/user'
       end
