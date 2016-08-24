@@ -59,7 +59,7 @@ module OmniAuth
           response
         end
 
-        @raw_info ||= JSON.parse(get_hash_from_channel.call(access_token.token, access_token.client.id).body)
+        @raw_info ||= JSON.parse(get_hash_from_channel.call(access_token.token, options.client_id).body)
       end
 
       def info_url
