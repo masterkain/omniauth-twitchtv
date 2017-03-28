@@ -1,5 +1,5 @@
 require 'omniauth-oauth2'
-require 'httpclient'
+require 'rest-client'
 
 module OmniAuth
   module Strategies
@@ -23,15 +23,12 @@ module OmniAuth
                image: raw_info['logo'],
                description: raw_info['bio'],
                urls: {
-                 twitchtv: profile_url,
-                 website: raw_info['_links']['self']
-               },
-               partnered: raw_info['partnered'])
+                 twitchtv: profile_url
+               })
       end
 
       credentials do
-        prune!(token: access_token.token,
-               secret: access_token.client.secret)
+        prune!(token: access_token.token, secret: access_token.client.secret)
       end
 
       extra do
@@ -50,9 +47,13 @@ module OmniAuth
 
       def raw_info
         get_hash_from_channel = lambda do |token, client_id|
-          http_client = HTTPClient.new
-          header = { 'Authorization' => "OAuth #{token}", 'Client-ID ' => client_id }
-          response = http_client.get(info_url, '', header)
+          response = RestClient.get(
+            info_url,
+            'Client-ID' => client_id,
+            'Accept' => 'application/vnd.twitchtv.v5+json',
+            'Authorization' => "OAuth #{token}"
+          )
+
           if response.code.to_i != 200
             raise Omniauth::Twitchtv::TwitchtvError, 'Failed to get user details from Twitch.TV'
           end
@@ -64,8 +65,8 @@ module OmniAuth
 
       def info_url
         unless options.scope && (options.scope.index('user_read') || options.scope.index(:user_read)) ||
-               options.scope && (options.scope.index('user_read') || options.scope.index(:user_read)) ||
-               options.scope.to_sym == :user_read || options.scope.to_sym == :channel_read
+            options.scope && (options.scope.index('user_read') || options.scope.index(:user_read)) ||
+            options.scope.to_sym == :user_read || options.scope.to_sym == :channel_read
           raise Omniauth::Twitchtv::TwitchtvError, 'You must include at least either the channel or user read scope in omniauth-twitchtv initializer.'
         end
         'https://api.twitch.tv/kraken/user'
@@ -80,6 +81,24 @@ module OmniAuth
         hash.delete_if do |_, value|
           prune!(value) if value.is_a?(Hash)
           value.nil? || (value.respond_to?(:empty?) && value.empty?)
+        end
+      end
+
+      def callback_url
+        # If redirect_uri is configured in token_params, use that
+        # value.
+        token_params.to_hash(symbolize_keys: true)[:redirect_uri] || super
+      end
+
+      def query_string
+        # This method is called by callback_url, only if redirect_uri
+        # is omitted in token_params.
+        if request.params['code']
+          # If this is a callback, ignore query parameters added by
+          # the provider.
+          ''
+        else
+          super
         end
       end
     end
