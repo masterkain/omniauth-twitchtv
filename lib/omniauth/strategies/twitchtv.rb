@@ -7,8 +7,8 @@ module OmniAuth
       class NoAuthorizationCodeError < StandardError; end
 
       option :client_options, site: 'https://api.twitch.tv',
-                              authorize_url: 'https://api.twitch.tv/helix/oauth2/authorize',
-                              token_url: 'https://api.twitch.tv/helix/oauth2/token'
+                              authorize_url: 'https://id.twitch.tv/oauth2/authorize',
+                              token_url: 'https://id.twitch.tv/oauth2/token'
 
       option :authorize_params, {}
       option :authorize_options, [:scope, :response_type]
